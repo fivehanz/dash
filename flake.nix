@@ -18,7 +18,9 @@
     let
       overlays = [
         (import rust-overlay)
-        (self: super: {
+        (self: super: rec {
+	  nodejs = super.nodejs-18_x;
+      	  yarn = (super.yarn.override { inherit nodejs; });
           rustToolchain =
             let
               rust = super.rust-bin;
@@ -28,10 +30,7 @@
             else if builtins.pathExists ./rust-toolchain then
               rust.fromRustupToolchainFile ./rust-toolchain
             else
-              rust.stable.latest.default;
-	  
-	  nodejs = super.nodejs-18_x;
-      	  yarn = (super.yarn.override { inherit nodejs; });
+              rust.stable.latest.default; 
         })
       ];
 
@@ -55,6 +54,7 @@
 
         shellHook = ''
           ${pkgs.rustToolchain}/bin/cargo --version
+	  echo "node `${pkgs.nodejs}/bin/node --version`"
 	  fish
         '';
       };
