@@ -21,7 +21,7 @@ async fn main() {
         .route("/api/v1", get(hello_handler)); // ! add api routes here
 
     // ip address and port
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
     println!("Listening on {}", addr); // ! convert to tracing
 
     // start server
