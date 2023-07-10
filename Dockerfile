@@ -9,5 +9,6 @@ RUN cargo build --release
 FROM debian:bookworm-slim AS runtime
 
 COPY --from=binary-builder /app/target/release/dash /runtime/
+COPY --from=binary-builder /app/dist /runtime/dist
 
 CMD [ "./runtime/dash" ]

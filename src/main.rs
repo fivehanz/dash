@@ -1,18 +1,24 @@
 use std::net::SocketAddr;
 
 use axum::{
-    response::{Html, IntoResponse},
+    http::StatusCode,
+    response::IntoResponse,
     routing::{get, get_service},
-    Router, Server,
+    Json, Router, Server,
 };
 use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
+    // declare static web router
+    let static_web_router: Router =
+        Router::new().nest_service("/", get_service(ServeDir::new("./dist")));
+
     // declare all routes
     let routes: Router = Router::new()
+        .merge(static_web_router)
         .route("/healthz", get(hello_handler))
-        .nest_service("/", get_service(ServeDir::new("./dist")));
+        .route("/api/v1", get(hello_handler)); // ! add api routes here
 
     // ip address and port
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
@@ -26,9 +32,5 @@ async fn main() {
 }
 
 async fn hello_handler() -> impl IntoResponse {
-    Html("<h1>Hello, from the other side!</h1>") // ! convert it to health check
-}
-
-async fn static_web_router() -> Router {
-    todo!("add static web router fn")
+    (StatusCode::OK, Json("ok")) // ! convert it to health check
 }
