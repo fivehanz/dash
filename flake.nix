@@ -19,8 +19,8 @@
       overlays = [
         (import rust-overlay)
         (self: super: rec {
-	  nodejs = super.nodejs-18_x;
-      	  yarn = (super.yarn.override { inherit nodejs; });
+          nodejs = super.nodejs-18_x;
+          yarn = (super.yarn.override { inherit nodejs; });
           rustToolchain =
             let
               rust = super.rust-bin;
@@ -46,16 +46,14 @@
           cargo-edit
           cargo-watch
           rust-analyzer
-	  node2nix
-	  nodejs
-	  yarn
-	  fish
+          node2nix
+          nodejs
+          yarn
         ];
 
         shellHook = ''
           ${pkgs.rustToolchain}/bin/cargo --version
-	  echo "node `${pkgs.nodejs}/bin/node --version`"
-	  fish
+          echo "node `${pkgs.nodejs}/bin/node --version`"
         '';
       };
     });
