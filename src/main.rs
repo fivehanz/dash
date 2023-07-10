@@ -12,7 +12,7 @@ async fn main() {
     // declare all routes
     let routes: Router = Router::new()
         .route("/healthz", get(hello_handler))
-        .nest_service("/", get_service(ServeDir::new("./web/build/")));
+        .nest_service("/", get_service(ServeDir::new("./dist")));
 
     // ip address and port
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
