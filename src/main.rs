@@ -25,8 +25,9 @@ async fn main() {
         .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
         .on_response(trace::DefaultOnResponse::new().level(Level::INFO));
 
-    // declare static web router
-    let static_router_service: MethodRouter = get_service(ServeDir::new("./dist"));
+    // declare static web router w/ not found fallback
+    let static_router_service: MethodRouter =
+        get_service(ServeDir::new("./dist").not_found_service(get(not_found_handler)));
 
     // declare all routes in app
     let app: Router = Router::new()
@@ -53,6 +54,6 @@ async fn hello_handler() -> impl IntoResponse {
     (StatusCode::OK, Json("ok")) // ! convert it to health check
 }
 
-// async fn not_found_handler() -> impl IntoResponse {
-//     (StatusCode::NOT_FOUND, Json("404 not found"))
-// }
+async fn not_found_handler() -> impl IntoResponse {
+    (StatusCode::NOT_FOUND, Json("404 not found"))
+}
