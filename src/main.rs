@@ -6,21 +6,18 @@ use axum::{
     routing::{get, get_service, MethodRouter},
     Json, Router, Server,
 };
+use tower_http::services::ServeDir;
 use tower_http::trace::{self, TraceLayer};
-use tower_http::{services::ServeDir, trace::Trace};
 use tracing::Level;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+// use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
 async fn main() {
     // initialize tracing subscriber
-    // tracing_subscriber::fmt()
-    //     .with_target(false)
-    //     .compact()
-    //     .init();
-
-    tracing_subscriber::registry()
-        .with(tracing_subscriber::fmt::layer())
+    tracing_subscriber::fmt()
+        .with_target(false)
+        .with_max_level(tracing::Level::DEBUG)
+        .compact()
         .init();
 
     // creates a TraceLayer for HTTP tracing with INFO level logging for spans and response handling.
