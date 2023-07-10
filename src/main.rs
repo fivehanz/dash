@@ -30,10 +30,11 @@ async fn main() {
 
     // declare all routes in app
     let app: Router = Router::new()
-        // .merge(static_web_router)
-        .nest_service("/", static_router_service) // static web router
+        .fallback_service(static_router_service)
+        // .nest_service("/", static_router_service) // static web router
         .route("/healthz", get(hello_handler)) // health check
         .route("/api/v1", get(hello_handler)) // ! add api routes here
+        // .fallback(not_found_handler)
         .layer(http_trace_layer);
 
     // ip address and port
@@ -51,3 +52,7 @@ async fn main() {
 async fn hello_handler() -> impl IntoResponse {
     (StatusCode::OK, Json("ok")) // ! convert it to health check
 }
+
+// async fn not_found_handler() -> impl IntoResponse {
+//     (StatusCode::NOT_FOUND, Json("404 not found"))
+// }
