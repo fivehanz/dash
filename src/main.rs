@@ -16,7 +16,7 @@ async fn main() {
     // initialize tracing subscriber
     tracing_subscriber::fmt()
         .with_target(false)
-        .with_max_level(tracing::Level::DEBUG)
+        .with_max_level(tracing::Level::INFO)
         .compact()
         .init();
 
