@@ -1,0 +1,4 @@
+name = "dash"
+port = 8080
+mode = "DEBUG" # DEV, PROD
+database_url = "postgres://postgres:postgres@localhost:5432/postgres"
