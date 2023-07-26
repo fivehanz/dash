@@ -28,8 +28,9 @@ impl Configs {
     pub fn new() -> Result<Self, ConfigError> {
         // build configs
         let configs = Config::builder()
-            .add_source(Environment::with_prefix("APP"))
             .add_source(File::with_name("config"))
+            .add_source(Environment::with_prefix("APP").separator("_"))
+            .add_source(Environment::default())
             .build()?;
 
         // return deserialized configs
