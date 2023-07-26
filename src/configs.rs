@@ -14,6 +14,7 @@ pub struct Configs {
 /// Enum representing the different modes.
 #[derive(Debug, Deserialize)]
 pub enum Mode {
+    // ! find a way to make it camelcase and match the enum at the same time
     PROD,
     DEV,
     DEBUG,
@@ -45,10 +46,10 @@ impl Configs {
     /// - `tracing::Level::INFO` for `Mode::DEV`.
     /// - `tracing::Level::TRACE` for `Mode::DEBUG`.
     pub fn log_level(&self) -> tracing::Level {
-        return match self.mode {
+        match self.mode {
             Mode::PROD => tracing::Level::WARN,
             Mode::DEV => tracing::Level::INFO,
             Mode::DEBUG => tracing::Level::TRACE,
-        };
+        }
     }
 }

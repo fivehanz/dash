@@ -45,7 +45,9 @@
           cargo-deny
           cargo-edit
           cargo-watch
-          rust-analyzer
+          clippy
+          diesel-cli
+          
           node2nix
           nodejs
           yarn

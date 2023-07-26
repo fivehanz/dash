@@ -21,17 +21,13 @@ async fn main() {
     // log congfigs
     tracing::trace!("{:#?}", &config);
 
-    // create router
-    let router = routes::router::create_router();
-
     // ip address and port
     let addr: SocketAddr = SocketAddr::from(([0, 0, 0, 0], config.port));
-    // info log
-    warn!("Listening on {}", addr);
+    warn!("Listening on {}", &addr);
 
     // start server
     Server::bind(&addr)
-        .serve(router.into_make_service())
+        .serve(routes::router::create_router().into_make_service())
         .await
         .unwrap();
 }

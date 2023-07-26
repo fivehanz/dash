@@ -8,6 +8,7 @@ use tower_http::services::ServeDir;
 use tower_http::trace::{self, TraceLayer};
 use tracing::Level;
 
+/// Creates a router for handling HTTP requests.
 pub fn create_router() -> Router {
     // creates a TraceLayer for HTTP tracing with INFO level logging for spans and response handling.
     let http_trace_layer = TraceLayer::new_for_http()
@@ -26,13 +27,15 @@ pub fn create_router() -> Router {
         // .fallback(not_found_handler)
         .layer(http_trace_layer);
 
-    return router;
+    router
 }
 
+/// Handler for health check endpoint.
 async fn health_check_handler() -> impl IntoResponse {
     (StatusCode::OK, Json("ok")) // ! convert it to health check
 }
 
+/// Handler for not found endpoint.
 async fn not_found_handler() -> impl IntoResponse {
     (StatusCode::NOT_FOUND, Json("oh no! 404 not found."))
 }
