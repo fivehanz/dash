@@ -1,37 +1,53 @@
 <script lang="ts">
-    import { getContext } from 'svelte';
-    import { Authorizer } from '@authorizerdev/authorizer-svelte';
-
-    /**
-	 * @type {{ token: string; user: any; loading: boolean; logout: Function; }}
-	 */
-	let state: { token: string; user: any; loading: boolean; logout: Function; };
     
-    const store: any = getContext('authorizerContext');
-    store.subscribe((/** @type {any} */ data: any) => {
-		state = data;
-	});
-
-	const logoutHandler = async () => {
-		await state.logout();
-	};
 </script>
 
-<div class="px-4 max-w-lg flex flex-col items-center justify-center mx-auto gap-8 min-h-screen ">
-    {#if state.user}
-        <div class="flex gap-4">
-            <h1 class="h1">Hey 👋,</h1>
-            <span>{state.user.email}</span>
+<div class="max-w-lg px-2 flex flex-col justify-center mx-auto gap-8 my-24">
+    <!-- login form -->
+    
+    <!-- <form> -->
+        <div class="card p-4 my-4 flex flex-col gap-6">
+            <div class="card-header flex justify-center">
+                <h2 class="h1">auth</h2>
+            </div>
+        <!-- alerts -->
+            <!-- error alert -->
+            <div class="alert variant-ghost-error">
+                <!-- Icon -->
+                <div>(icon)</div>
+                <!-- Message -->
+                <div class="alert-message">
+                    <h3 class="h3">error</h3>
+                    <p>message</p>
+                </div>
+            </div>
+            <!-- error alert end -->
+            <!-- success alert -->
+            <div class="alert variant-ghost-success">
+                <!-- Icon -->
+                <div>(icon)</div>
+                <!-- Message -->
+                <div class="alert-message">
+                    <h3 class="h3">success</h3>
+                    <p>message</p>
+                </div>
+            </div>
+            <!-- success alert end -->
+        <!-- alerts end -->
 
-            {#if state.loading}
-                <h3 class="h3">Processing....</h3>
-            {:else}
-                <!-- <h3 class="h3" on:click={logoutHandler}>Logout</h3> -->
-                <h3 class="h3">Logout</h3>
-            {/if}
+        <!-- form elements -->
+            <label class="label">
+                <span>email</span>
+                <input class="input" name="email" title="email" type="email" placeholder="john@example.com" autocomplete="email" />
+            </label>
+            <label class="label">
+                <span>password</span>
+                <input class="input" title="password" type="password" placeholder="password" />
+            </label>
+            <button class="btn variant-filled-primary">login</button>
+		<!-- form elements end -->
         </div>
-    {:else}
-        <h1 class="h1">authenticate</h1>
-        <Authorizer />
-    {/if}
+    <!-- </form> -->
+    <!-- login form end -->
 </div>
+

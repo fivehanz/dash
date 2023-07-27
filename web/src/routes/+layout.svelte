@@ -5,20 +5,11 @@
   import '@skeletonlabs/skeleton/styles/skeleton.css';
   // Finally, your application's global stylesheet (sometimes labeled 'app.css')
   import '../app.postcss';
-  // authorizer
-	import '@authorizerdev/authorizer-svelte/styles/default.css';
-  import { AuthorizerProvider } from '@authorizerdev/authorizer-svelte';
+  
   // skeleton ui components
   import { AppShell, AppBar, LightSwitch } from '@skeletonlabs/skeleton';
 </script>
 
-<AuthorizerProvider
-    config={{
-        authorizerURL: `https://d-auth.hanz.lol/`,
-        redirectURL: typeof window != 'undefined' ? window.location.origin : ``,
-        client_id: 'b221ab06-c89f-4c40-a1da-34fac30ca7fc',
-    }}
->
 <AppShell>
   <!-- header -->
 	<svelte:fragment slot="header">
@@ -31,9 +22,11 @@
       <!-- right side -->
       <svelte:fragment slot="trail">
         <div class="flex gap-4 align-baseline">
-          <div>
-            actions
-          </div>
+          <nav>
+            <a href="/">home</a>
+            <a href="/auth">auth</a>
+            <a href="/dash">something</a>
+          </nav>
           <LightSwitch />
         </div>
       </svelte:fragment>
@@ -53,4 +46,3 @@
   </svelte:fragment>
   <!-- end footer -->
 </AppShell>
-</AuthorizerProvider>
