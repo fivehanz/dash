@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/fivehanz/dash/compare/v0.1.0...v0.2.0) (2023-07-26)
+
+
+### Features
+
+* configs load from config.toml ([960eca4](https://github.com/fivehanz/dash/commit/960eca4e1cf379358738ac3e4d1c1094df169227))
+
+
+### Bug Fixes
+
+* config not found error ([a044f3b](https://github.com/fivehanz/dash/commit/a044f3bceea13fb1f2aa674f78ad561e897eb24f))
+* env not loading ([188abef](https://github.com/fivehanz/dash/commit/188abefc015250fc8d26cdc5f860d80779fc54e0))
+
 ## 0.1.0 (2023-07-26)
 
 
