@@ -1,4 +1,5 @@
 mod configs;
+mod db;
 mod routes;
 
 use axum::Server;
