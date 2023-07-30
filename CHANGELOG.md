@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/fivehanz/dash/compare/v0.2.0...v0.3.0) (2023-07-30)
+
+
+### Features
+
+* **web:** add login page ([0075bf5](https://github.com/fivehanz/dash/commit/0075bf52c85af425e90dcd8e9cfcfe298d7a5453))
+
+
+### Bug Fixes
+
+* traililing slash on static build ([f90415a](https://github.com/fivehanz/dash/commit/f90415a39046845f3ede53b96da0159ccc118e9c))
+
 ## [0.2.0](https://github.com/fivehanz/dash/compare/v0.1.0...v0.2.0) (2023-07-26)
 
 
