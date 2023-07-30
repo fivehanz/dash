@@ -37,5 +37,5 @@ async fn health_check_handler() -> impl IntoResponse {
 
 /// Handler for not found endpoint.
 async fn not_found_handler() -> impl IntoResponse {
-    (StatusCode::NOT_FOUND, Json("oh no! 404 not found."))
+    Json("oh no! 404 not found.")
 }
