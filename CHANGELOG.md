@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/fivehanz/dash/compare/v0.3.0...v0.4.0) (2023-08-13)
+
+
+### Features
+
+* connection to db ([a602542](https://github.com/fivehanz/dash/commit/a602542eb9ed294368c012bfa133ddfb0e2837a5))
+
 ## [0.3.0](https://github.com/fivehanz/dash/compare/v0.2.0...v0.3.0) (2023-07-30)
 
 
