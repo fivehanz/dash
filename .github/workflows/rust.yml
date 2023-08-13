@@ -15,13 +15,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Install rust toolchain with clippy
+      - name: install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           default: true
           toolchain: 1.71.0
-      - name: Build
+      - name: build
         run: cargo build --verbose
-      - name: Run tests
+      - name: run tests
         run: cargo test --verbose
