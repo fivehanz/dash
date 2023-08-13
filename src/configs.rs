@@ -3,10 +3,10 @@ use serde_derive::Deserialize;
 use tracing::error;
 
 /// Struct representing the configurations.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[allow(unused)]
 pub struct Configs {
-    pub name: String,
+    pub name: String, // ! change to app_name
     pub port: u16,
     pub mode: Mode,
     pub db_host: String,
@@ -17,7 +17,7 @@ pub struct Configs {
 }
 
 /// Enum representing the different modes.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub enum Mode {
     // ! find a way to make it camelcase and match the enum at the same time
     PROD,
@@ -35,7 +35,7 @@ impl Configs {
         // build configs
         let configs = Config::builder()
             .add_source(File::with_name("config").required(false))
-            .add_source(Environment::with_prefix("APP").separator("_"))
+            .add_source(Environment::with_prefix("APP").separator("_")) // ! generalize to app_name instead of name
             .add_source(Environment::default())
             .build()?;
 
@@ -52,7 +52,7 @@ impl Configs {
         match Configs::new() {
             Ok(c) => c,
             Err(err) => {
-                error!("{:#?}", &err);
+                error!("{:#?}", err);
                 std::process::exit(1);
             }
         }

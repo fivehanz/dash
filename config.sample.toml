@@ -1,4 +1,11 @@
 name = "dash"
 port = 8080
 mode = "DEBUG" # DEV, PROD
-database_url = "postgres://postgres:postgres@localhost:5432/postgres"
+
+# DEFINE LOGIN johndoe ON DATABASE PASSWORD 'password123'
+
+db_host = "ws://localhost:8000"
+db_user="dashuser"
+db_password = "password123"
+db_name = "dashboard"
+db_namespace = "dashboard"

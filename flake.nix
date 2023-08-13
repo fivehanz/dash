@@ -33,6 +33,10 @@
       pkgs = import nixpkgs {inherit system overlays;};
     in {
       devShells.default = pkgs.mkShell {
+        buildInputs = [
+          pkgs.darwin.apple_sdk.frameworks.Security
+        ];
+
         packages = with pkgs; [
           rustToolchain
           openssl

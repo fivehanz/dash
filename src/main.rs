@@ -10,19 +10,26 @@ use tracing::{info, warn};
 #[tokio::main]
 async fn main() {
     // initialize tracing subscriber
-    tracing_subscriber::fmt().compact().init();
+    tracing_subscriber::fmt()
+        .pretty()
+        .with_target(false)
+        .with_file(true)
+        .with_line_number(true)
+        .init();
 
     // initialize environment configs
-    let config = Configs::init_configs();
+    let config: Configs = Configs::init_configs();
+    // log configs
+    info!("{:?}", &config);
 
     // finalize tracing subscriber
     tracing_subscriber::fmt()
-        .with_target(false)
         .with_max_level(config.log_level())
         .finish();
 
-    // log configs
-    info!("{:#?}", &config);
+    // initialize database connection
+    let db = db::connection::init(config.clone()).await;
+    info!("{:?}", &db);
 
     // ip address and port
     let addr: SocketAddr = SocketAddr::from(([0, 0, 0, 0], config.port));
