@@ -5,26 +5,28 @@ mod routes;
 use axum::Server;
 use configs::Configs;
 use std::net::SocketAddr;
-use tracing::warn;
+use tracing::{info, warn};
 
 #[tokio::main]
 async fn main() {
-    // initialize environment configs
-    let config = Configs::new().unwrap();
-
     // initialize tracing subscriber
+    tracing_subscriber::fmt().compact().init();
+
+    // initialize environment configs
+    let config = Configs::init_configs();
+
+    // finalize tracing subscriber
     tracing_subscriber::fmt()
         .with_target(false)
         .with_max_level(config.log_level())
-        .pretty()
-        .init();
+        .finish();
 
-    // log congfigs
-    tracing::trace!("{:#?}", &config);
+    // log configs
+    info!("{:#?}", &config);
 
     // ip address and port
     let addr: SocketAddr = SocketAddr::from(([0, 0, 0, 0], config.port));
-    warn!("Listening on {}", &addr);
+    warn!("started server on {}", &addr);
 
     // start server
     Server::bind(&addr)

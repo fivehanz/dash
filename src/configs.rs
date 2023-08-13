@@ -1,5 +1,6 @@
 use config::{Config, ConfigError, Environment, File};
 use serde_derive::Deserialize;
+use tracing::error;
 
 /// Struct representing the configurations.
 #[derive(Debug, Deserialize)]
@@ -7,8 +8,12 @@ use serde_derive::Deserialize;
 pub struct Configs {
     pub name: String,
     pub port: u16,
-    database_url: String,
     pub mode: Mode,
+    pub db_host: String,
+    pub db_user: String,
+    pub db_password: String,
+    pub db_name: String,
+    pub db_namespace: String,
 }
 
 /// Enum representing the different modes.
@@ -26,7 +31,7 @@ impl Configs {
     /// # Returns
     ///
     /// Returns a `Result` containing the newly created instance or a `ConfigError` if there was an error.
-    pub fn new() -> Result<Self, ConfigError> {
+    fn new() -> Result<Self, ConfigError> {
         // build configs
         let configs = Config::builder()
             .add_source(File::with_name("config").required(false))
@@ -36,6 +41,21 @@ impl Configs {
 
         // return deserialized configs
         configs.try_deserialize::<Configs>()
+    }
+
+    /// Initializes the configurations.
+    ///
+    /// This function creates a new instance of the `Configs` struct and returns it.
+    /// If an error occurs during the initialization process, an error message is logged
+    /// and the program exits with a status code of 1.
+    pub fn init_configs() -> Self {
+        match Configs::new() {
+            Ok(c) => c,
+            Err(err) => {
+                error!("{:#?}", &err);
+                std::process::exit(1);
+            }
+        }
     }
 
     /// Returns the log level based on the current mode.
