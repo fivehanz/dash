@@ -19,7 +19,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          override: true
+          default: true
           toolchain: 1.67.1
           components: clippy
       - name: Run clippy linter
