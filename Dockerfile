@@ -1,6 +1,6 @@
 ### build binary
-FROM rust:slim-bookworm AS binary-builder
-#FROM cgr.dev/chainguard/rust:latest AS binary-builder
+FROM rust:1.71-slim-bookworm AS binary-builder
+
 WORKDIR /app
 COPY . .
 RUN cargo build --release
