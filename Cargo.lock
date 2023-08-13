@@ -549,12 +549,14 @@ dependencies = [
  "libreauth",
  "serde",
  "serde_derive",
+ "serde_json",
  "surrealdb",
  "tokio",
  "tonic",
  "tower-http",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]

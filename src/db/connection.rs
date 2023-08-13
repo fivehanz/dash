@@ -1,17 +1,17 @@
 use crate::configs;
 use surrealdb::{
-    engine::any::Any,
+    engine::remote::ws::{Client, Ws},
     opt::auth::{Database, Jwt},
     Surreal,
 };
 use tracing::error;
 
-pub static DB: Surreal<Any> = Surreal::init();
+pub static DB: Surreal<Client> = Surreal::init();
 
 // connect and signin to the database
 async fn new(configs: configs::Configs) -> surrealdb::Result<Jwt> {
     // Connect to the database
-    DB.connect(configs.db_host).await?;
+    DB.connect::<Ws>(configs.db_host).await?;
 
     // sign in to the database
     DB.signin(Database {
