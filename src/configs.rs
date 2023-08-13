@@ -67,8 +67,8 @@ impl Configs {
     /// - `tracing::Level::TRACE` for `Mode::DEBUG`.
     pub fn log_level(&self) -> tracing::Level {
         match self.mode {
-            Mode::PROD => tracing::Level::WARN,
-            Mode::DEV => tracing::Level::INFO,
+            Mode::PROD => tracing::Level::INFO,
+            Mode::DEV => tracing::Level::DEBUG,
             Mode::DEBUG => tracing::Level::TRACE,
         }
     }
