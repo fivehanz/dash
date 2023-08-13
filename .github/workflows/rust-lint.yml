@@ -1,4 +1,4 @@
-name: Rust
+name: rust linting with clippy
 
 on:
   push:
@@ -21,7 +21,6 @@ jobs:
           profile: minimal
           default: true
           toolchain: 1.71.0
-      - name: Build
-        run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
+          components: clippy
+      - name: Run clippy linter
+        run: cargo clippy
