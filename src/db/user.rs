@@ -1,12 +1,11 @@
-use std::collections::HashMap;
-
+use crate::db::connection::CONNECTION as DB;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use surrealdb::{engine::remote::ws::Client, Result as SurrealResult, Surreal};
+use std::collections::HashMap;
 use tracing::{debug, instrument, warn};
 use uuid::Uuid;
 
-use crate::db::connection::DB;
+const TABLE: &str = "user";
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct User {
@@ -69,7 +68,7 @@ impl User {
             updated_at: Utc::now(),
         };
 
-        match new_user.create(&DB).await {
+        match DB.create(TABLE).content(new_user).await {
             Ok(user) => {
                 debug!("created new user");
                 Ok(user)
@@ -81,44 +80,31 @@ impl User {
         }
     }
 
+    #[instrument]
     pub async fn get_user(id: Uuid) -> Option<UserDetails> {
-        Self::read(&DB, id.to_string()).await.unwrap()
+        match DB.select((TABLE, id.to_string())).await {
+            Ok(user) => Some(user),
+            Err(e) => {
+                debug!("failed to get user: {:?}", e);
+                None
+            }
+        }
     }
 
-    // ! generalize CRUD into Database struct on connection file
-    async fn create(&self, conn: &Surreal<Client>) -> SurrealResult<UserDetails> {
-        conn.create("user").content(self).await
-    }
-
-    async fn read(conn: &Surreal<Client>, id: String) -> SurrealResult<Option<UserDetails>> {
-        conn.select(("user", id)).await
-    }
-
-    // async fn update(&self, conn: &Surreal<Client>) -> SurrealResult<User> {
-    //     conn.update(("user", self.id.clone())).merge(self).await
+    // ! create UpdateStatus enum (generalized)
+    // #[instrument(skip(self))]
+    // async fn update(&self) {
+    //     match DB.update((TABLE, self.id)).merge(self).await {
+    //         Ok(user) => Ok(user),
+    //         Err(e) => {
+    //             debug!("failed to update user: {:?}", &e);
+    //             Err(e)
+    //         }
+    //     }
     // }
 
     // async fn delete(&self, conn: &Surreal<Client>) -> SurrealResult<()> {
     //     conn.delete(("user", self.id.clone())).await
-    // }
-
-    // pub fn get_user(id: Uuid) -> Result<UserDetails, String> {
-    //     // Query database for user
-
-    //     let user = user.find_by_id(id);
-
-    //     match user {
-    //         Some(user) => Ok(UserDetails {
-    //             id: user.id,
-    //             username: user.username,
-    //             email: user.email,
-    //             name: user.name,
-    //             profile_image_url: user.profile_image_url,
-    //             created_at: user.created_at,
-    //             updated_at: user.updated_at,
-    //         }),
-    //         None => Err("User not found".to_string()),
-    //     }
     // }
 
     // #[instrument(skip(self))]
