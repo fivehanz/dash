@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: sudo apt install -y protobuf-compiler libprotobuf-dev
       - uses: actions/checkout@v3
       - name: Install rust toolchain with clippy
         uses: actions-rs/toolchain@v1
