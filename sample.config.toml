@@ -1,11 +1,12 @@
-name = "dash"
-port = 8080
-mode = "DEBUG" # DEV, PROD
+app_name = "dash"
+app_mode = "DEV" # DEBUG, DEV, PROD
 
-# DEFINE LOGIN johndoe ON DATABASE PASSWORD 'password123'
+app_port = 7100
+grpc_port = 7101
 
 db_host = "localhost:8000"
-db_user="dashuser"
-db_password = "password123"
-db_name = "dashboard"
-db_namespace = "dashboard"
+db_user="user"
+db_password = "password"
+db_name = "dashboard-db"
+db_namespace = "dashboard-ns"
+# DEFINE LOGIN johndoe ON DATABASE PASSWORD 'password123'
