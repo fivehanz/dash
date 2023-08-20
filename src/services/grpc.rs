@@ -3,9 +3,16 @@ use tonic::transport::{server::Router, Server};
 use tracing::info;
 
 pub fn create_router() -> Router {
-    Server::builder().add_service(super::users::users_server::UsersServer::new(
-        super::users::UsersService::default(),
-    ))
+    let reflection = tonic_reflection::server::Builder::configure()
+        .register_encoded_file_descriptor_set(super::users::FILE_DESCRIPTOR_SET)
+        .build()
+        .unwrap();
+
+    Server::builder()
+        .add_service(super::users::users_server::UsersServer::new(
+            super::users::UsersService::default(),
+        ))
+        .add_service(reflection)
 }
 
 pub async fn start_server(port: u16) -> Result<(), tokio::task::JoinError> {

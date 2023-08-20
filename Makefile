@@ -1,7 +1,7 @@
 
 
 watch:
-	cargo watch -q -c -w src/ -x run
+	cargo watch -q -c -w src/ -w build.rs -x run
 
 check:
 	cargo check
@@ -9,3 +9,5 @@ check:
 build:
 	cargo build --release
 
+clean:
+	cargo clean

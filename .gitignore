@@ -3,3 +3,4 @@
 config.toml
 .env
 .vscode/
+.DS_Store
