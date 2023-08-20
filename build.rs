@@ -1,4 +1,14 @@
+use std::env;
+use std::path::PathBuf;
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    tonic_build::compile_protos("proto/users.proto")?;
+    tonic_build::configure()
+        .build_server(true)
+        .type_attribute(".", "#[derive(serde::Serialize)]")
+        .type_attribute(".", "#[derive(serde::Deserialize)]")
+        .file_descriptor_set_path(
+            PathBuf::from(env::var("OUT_DIR").unwrap()).join("users_descriptor.bin"),
+        )
+        .compile(&["proto/users.proto"], &["proto"])?;
     Ok(())
 }
