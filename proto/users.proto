@@ -7,7 +7,7 @@ service Users {
     rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
     rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
 
-    rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
+    // rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
 }
 
 message CreateUserRequest {
@@ -47,9 +47,9 @@ message DeleteUserResponse {
     string id = 1;
 }
 
-message GetAllUsersRequest {
-}
+// message GetAllUsersRequest {
+// }
 
-message GetAllUsersResponse {
-    repeated User users = 1;
-}
+// message GetAllUsersResponse {
+//     repeated User users = 1;
+// }
