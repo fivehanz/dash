@@ -23,10 +23,10 @@ async fn main() {
 
     // initialize environment configs
     let config = Configs::init();
-    debug!("{:?}", &config);
+    debug!("{:#?}", &config);
 
     // finalize tracing subscriber
-    // subscriber.with_max_level(config.log_level()).init();
+    debug!("log_level={}", config.log_level());
 
     // initialize database connection
     let _db = Connection::new().init(&config).await;
