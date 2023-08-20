@@ -1,12 +1,12 @@
 mod configs;
 mod db;
-mod routes;
+mod services;
 
 use crate::db::connection::Connection;
-use axum::Server;
+
 use configs::Configs;
-use std::net::SocketAddr;
-use tracing::{debug, info};
+
+use tracing::debug;
 
 #[tokio::main]
 async fn main() {
@@ -22,7 +22,7 @@ async fn main() {
     // ! until config.loglevel becomes available
 
     // initialize environment configs
-    let config = Configs::init();
+    let config: Configs = Configs::init();
     debug!("{:#?}", &config);
 
     // finalize tracing subscriber
@@ -31,13 +31,10 @@ async fn main() {
     // initialize database connection
     let _db = Connection::new().init(&config).await;
 
-    // ip address and port
-    let addr: SocketAddr = SocketAddr::from(([0, 0, 0, 0], config.port));
-    info!("started server on {}", &addr);
-
-    // start server
-    Server::bind(&addr)
-        .serve(routes::router::create_router().into_make_service())
-        .await
-        .unwrap();
+    // start grpc and app/http server concurrently
+    tokio::try_join!(
+        services::grpc::start_server(config.grpc_port),
+        services::router::start_server(config.app_port)
+    )
+    .unwrap();
 }

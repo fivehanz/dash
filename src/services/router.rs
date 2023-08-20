@@ -4,11 +4,12 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
     routing::{get, get_service, MethodRouter},
-    Json, Router,
+    Json, Router, Server,
 };
+use std::net::SocketAddr;
 use tower_http::services::ServeDir;
 use tower_http::trace::{self, TraceLayer};
-use tracing::{debug, warn, Level};
+use tracing::{debug, info, warn, Level};
 use uuid::Uuid;
 
 /// Creates a router for handling HTTP requests.
@@ -33,6 +34,20 @@ pub fn create_router() -> Router {
         .layer(http_trace_layer);
 
     router
+}
+
+pub async fn start_server(port: u16) -> Result<(), tokio::task::JoinError> {
+    tokio::spawn(async move {
+        // app ip address and port
+        let app_addr: SocketAddr = SocketAddr::from(([0, 0, 0, 0], port));
+        info!("start app/http server on {}", &app_addr);
+
+        Server::bind(&app_addr)
+            .serve(self::create_router().into_make_service())
+            .await
+            .unwrap();
+    })
+    .await
 }
 
 /// Handler for health check endpoint.

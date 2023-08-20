@@ -5,9 +5,10 @@ use tracing::{debug, error};
 /// Struct representing the configurations.
 #[derive(Debug, Deserialize, Clone, Default)]
 pub struct Configs {
-    pub name: String, // ! change to app_name
-    pub port: u16,
-    pub mode: Mode,
+    pub app_name: String,
+    pub app_mode: Mode,
+    pub app_port: u16,
+    pub grpc_port: u16,
     pub db_host: String,
     pub db_user: String,
     pub db_password: String,
@@ -35,7 +36,6 @@ impl Configs {
         // build configs
         let read = Config::builder()
             .add_source(File::with_name("config").required(false))
-            .add_source(Environment::with_prefix("APP").separator("_")) // ! generalize to app_name instead of name
             .add_source(Environment::default())
             .build();
 
@@ -60,14 +60,15 @@ impl Configs {
             Ok(configs) => configs,
             Err(err) => {
                 error!("config & env error: {:?}", &err);
-                Self::default_with_port(4000)
+                Self::default_with_port(4000, 4001)
             }
         }
     }
 
-    fn default_with_port(p: u16) -> Self {
+    fn default_with_port(app_port: u16, grpc_port: u16) -> Self {
         Self {
-            port: p,
+            app_port,
+            grpc_port,
             ..Self::default()
         }
     }
@@ -80,7 +81,7 @@ impl Configs {
     /// - `tracing::Level::INFO` for `Mode::DEV`.
     /// - `tracing::Level::TRACE` for `Mode::DEBUG`.
     pub fn log_level(&self) -> tracing::Level {
-        match self.mode {
+        match self.app_mode {
             Mode::PROD => tracing::Level::INFO,
             Mode::DEV => tracing::Level::DEBUG,
             Mode::DEBUG => tracing::Level::TRACE,

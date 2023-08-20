@@ -1,15 +1,10 @@
+use super::users::users_server::Users;
 use tonic::{include_proto, Request, Response, Status};
 
-use users::users_server::{Users, UsersServer};
-use users::{
-    CreateUserRequest, CreateUserResponse, DeleteUserRequest, DeleteUserResponse, GetUserRequest,
-    GetUserResponse, UpdateUserRequest, UpdateUserResponse,
-};
+include_proto!("users");
 
 #[derive(Debug, Default)]
 pub struct UsersService {}
-
-include_proto!("users");
 
 #[tonic::async_trait]
 impl Users for UsersService {
@@ -24,7 +19,11 @@ impl Users for UsersService {
         &self,
         request: Request<GetUserRequest>,
     ) -> Result<Response<GetUserResponse>, Status> {
-        unimplemented!()
+        Ok(Response::new(GetUserResponse {
+            id: request.into_inner().id,
+            name: "name".to_string(),
+            email: "email".to_string(),
+        }))
     }
 
     async fn update_user(
