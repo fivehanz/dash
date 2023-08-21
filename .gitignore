@@ -1,6 +1,6 @@
 /target
 .direnv/
-config.toml
+app.toml
 .env
 .vscode/
 .DS_Store

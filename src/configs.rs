@@ -35,7 +35,7 @@ impl Configs {
     fn new() -> Result<Configs, ConfigError> {
         // build configs
         let read = Config::builder()
-            .add_source(File::with_name("config").required(false))
+            .add_source(File::with_name("app").required(false))
             .add_source(Environment::default())
             .build();
 
