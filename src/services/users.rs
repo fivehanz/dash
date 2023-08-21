@@ -1,11 +1,12 @@
-use super::users::users_server::Users;
+use super::proto::{
+    users_server::Users, CreateUserRequest, CreateUserResponse, DeleteUserRequest,
+    DeleteUserResponse, GetUserRequest, GetUserResponse, UpdatePasswordRequest,
+    UpdatePasswordResponse, UpdateUserRequest, UpdateUserResponse, User,
+};
 use crate::db::user::User as UserDb;
 use serde_derive::{Deserialize, Serialize};
-use tonic::{include_file_descriptor_set, include_proto, Request, Response, Status};
+use tonic::{Request, Response, Status};
 use tracing::debug;
-
-include_proto!("users");
-pub(crate) const FILE_DESCRIPTOR_SET: &[u8] = include_file_descriptor_set!("users_descriptor");
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct UsersService {}
@@ -38,7 +39,8 @@ impl Users for UsersService {
         // Log the incoming request
         debug!("REQUEST get_user: {:#?}", &request);
 
-        let response = match request.into_inner().id.as_str().try_into() {
+        let response: Response<GetUserResponse> = match request.into_inner().id.as_str().try_into()
+        {
             Ok(id) => match UserDb::get_user(id).await {
                 Some(user) => Response::new(GetUserResponse {
                     success: true,

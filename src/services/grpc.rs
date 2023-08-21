@@ -2,14 +2,16 @@ use std::net::SocketAddr;
 use tonic::transport::{server::Router, Server};
 use tracing::info;
 
+pub(crate) const FILE_DESCRIPTOR_SET: &[u8] = tonic::include_file_descriptor_set!("api_descriptor");
+
 pub fn create_router() -> Router {
     let reflection = tonic_reflection::server::Builder::configure()
-        .register_encoded_file_descriptor_set(super::users::FILE_DESCRIPTOR_SET)
+        .register_encoded_file_descriptor_set(FILE_DESCRIPTOR_SET)
         .build()
         .unwrap();
 
     Server::builder()
-        .add_service(super::users::users_server::UsersServer::new(
+        .add_service(super::proto::users_server::UsersServer::new(
             super::users::UsersService::default(),
         ))
         .add_service(reflection)
