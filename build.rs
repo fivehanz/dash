@@ -7,8 +7,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .type_attribute(".", "#[derive(serde::Serialize)]")
         .type_attribute(".", "#[derive(serde::Deserialize)]")
         .file_descriptor_set_path(
-            PathBuf::from(env::var("OUT_DIR").unwrap()).join("users_descriptor.bin"),
+            PathBuf::from(env::var("OUT_DIR").unwrap()).join("api_descriptor.bin"),
         )
-        .compile(&["proto/users.proto"], &["proto"])?;
+        .compile(&["proto/api.proto"], &["proto"])?;
     Ok(())
 }
