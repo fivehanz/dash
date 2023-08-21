@@ -11,6 +11,10 @@ service Users {
     // rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
 }
 
+service Auth {
+    // rpc Login(LoginRequest) returns (LoginResponse);
+}
+
 message CreateUserRequest {
     string email = 1;
     string password = 2;
@@ -55,7 +59,7 @@ message UpdateUserRequest {
 message UpdateUserResponse {
     bool success = 1;
     string id = 2;
-    optional string message = 3;
+    string message = 3;
 }
 
 message DeleteUserRequest {
@@ -64,7 +68,8 @@ message DeleteUserRequest {
 
 message DeleteUserResponse {
     bool success = 1;
-    optional string message = 2;
+    string id = 2;
+    string message = 3;
 }
 
 message UpdatePasswordRequest {
