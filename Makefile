@@ -14,3 +14,6 @@ clean:
 
 lint:
 	cargo clippy
+
+update:
+	cargo update
