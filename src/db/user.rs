@@ -1,6 +1,7 @@
 use crate::db::connection::CONNECTION as DB;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_email::Email;
 use std::collections::HashMap;
 use tracing::{debug, instrument, warn};
 use uuid::Uuid;
@@ -11,7 +12,7 @@ const TABLE: &str = "user";
 pub struct User {
     pub id: String,
     pub username: String,
-    pub email: String,
+    pub email: Email,
     pub password: String,
     pub name: String,
     pub role: Role,
@@ -37,7 +38,7 @@ pub struct Id {
 pub struct UserDetails {
     pub id: Id,
     pub username: String,
-    pub email: String,
+    pub email: Email,
     pub name: String,
     pub role: Role,
     pub profile_image_url: Option<String>,
@@ -50,15 +51,13 @@ pub struct UserDetails {
 impl User {
     #[instrument]
     pub async fn new(
-        email: String,
+        email: Email,
         password: String,
         username: String,
         name: String,
     ) -> Result<UserDetails, surrealdb::Error> {
         // ! Hash password w/ aragon?
         let hashed_password = password;
-
-        // ! validate user data
 
         // create new User Struct
         let new_user = Self {
