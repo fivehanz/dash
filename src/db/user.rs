@@ -27,13 +27,13 @@ pub enum Role {
     User,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Id {
     pub id: HashMap<String, Uuid>,
     // pub tb: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct UserDetails {
     pub id: Id,
     pub username: String,
@@ -45,6 +45,8 @@ pub struct UserDetails {
     pub updated_at: DateTime<Utc>,
 }
 
+// ! create UserStatus enum (generalized)
+
 impl User {
     #[instrument]
     pub async fn new(
@@ -53,11 +55,14 @@ impl User {
         username: String,
         name: String,
     ) -> Result<UserDetails, surrealdb::Error> {
-        // Hash password
+        // ! Hash password w/ aragon?
         let hashed_password = password;
 
+        // ! validate user data
+
+        // create new User Struct
         let new_user = Self {
-            id: Uuid::new_v4().to_string(), // ! change it to Uuid::now_v7()
+            id: Uuid::now_v7().to_string(),
             username,
             email,
             password: hashed_password,
@@ -68,6 +73,7 @@ impl User {
             updated_at: Utc::now(),
         };
 
+        // insert into DB
         match DB.create(TABLE).content(new_user).await {
             Ok(user) => {
                 debug!("created new user");
@@ -85,13 +91,12 @@ impl User {
         match DB.select((TABLE, id.to_string())).await {
             Ok(user) => Some(user),
             Err(e) => {
-                debug!("failed to get user: {:?}", e);
+                warn!("failed to get user: {:?}", e);
                 None
             }
         }
     }
 
-    // ! create UpdateStatus enum (generalized)
     // #[instrument(skip(self))]
     // async fn update(&self) {
     //     match DB.update((TABLE, self.id)).merge(self).await {
@@ -103,9 +108,19 @@ impl User {
     //     }
     // }
 
-    // async fn delete(&self, conn: &Surreal<Client>) -> SurrealResult<()> {
-    //     conn.delete(("user", self.id.clone())).await
-    // }
+    #[instrument]
+    pub async fn delete_user(id: Uuid) -> Option<UserDetails> {
+        match DB.delete((TABLE, id.to_string())).await {
+            Ok(user) => {
+                debug!("deleted user");
+                return Some(user);
+            }
+            Err(e) => {
+                warn!("failed to delete user: {:?}", &e);
+                return None;
+            }
+        }
+    }
 
     // #[instrument(skip(self))]
     // pub fn update_name(&mut self, name: String) {
