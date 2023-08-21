@@ -11,3 +11,6 @@ build:
 
 clean:
 	cargo clean
+
+lint:
+	cargo clippy
