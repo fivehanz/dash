@@ -5,6 +5,7 @@ use super::proto::{
 };
 use crate::db::user::User as UserDb;
 use serde_derive::{Deserialize, Serialize};
+use serde_email::Email;
 use tonic::{Request, Response, Status};
 use tracing::{debug, instrument, warn};
 
@@ -40,15 +41,17 @@ impl Users for UsersService {
 
         let request = request.into_inner();
 
+        // ! validate user data
+        let email: Email = match Email::try_from(request.email) {
+            Ok(email) => email,
+            Err(e) => {
+                debug!("RESPONSE failed to process create_user, {}", &e);
+                return Err(Status::invalid_argument(e.to_string()));
+            }
+        };
+
         // Create a new user
-        match UserDb::new(
-            request.email,
-            request.password,
-            request.username,
-            request.name,
-        )
-        .await
-        {
+        match UserDb::new(email, request.password, request.username, request.name).await {
             Ok(user) => {
                 // construct the response
                 let response = Response::new(CreateUserResponse {
@@ -56,7 +59,7 @@ impl Users for UsersService {
                     id: user.id.id.get("String").unwrap().to_string(),
                 });
                 // Log the response
-                debug!("RESPONSE create_user request {:#?}", &response);
+                debug!("RESPONSE create_user request {:?}", &response);
                 // return the response
                 Ok(response)
             }
@@ -94,7 +97,7 @@ impl Users for UsersService {
                     success: true,
                     user: Some(User {
                         id: user.id.id.get("String").unwrap().to_string(),
-                        email: user.email,
+                        email: user.email.to_string(),
                         username: user.username,
                         name: user.name,
                         role: user.role as u32,
