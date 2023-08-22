@@ -1,21 +1,25 @@
 use crate::db::connection::CONNECTION as DB;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use serde_email::Email;
 use std::collections::HashMap;
 use tracing::{debug, instrument, warn};
 use uuid::Uuid;
+use validator::Validate;
 
 const TABLE: &str = "user";
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Validate, Serialize, Deserialize)]
 pub struct User {
     pub id: String,
+    #[validate(length(min = 4, max = 20))]
     pub username: String,
-    pub email: Email,
+    #[validate(email)]
+    pub email: String,
     pub password: String,
+    #[validate(length(min = 3))]
     pub name: String,
     pub role: Role,
+    #[validate(url)]
     pub profile_image_url: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
@@ -38,7 +42,7 @@ pub struct Id {
 pub struct UserDetails {
     pub id: Id,
     pub username: String,
-    pub email: Email,
+    pub email: String,
     pub name: String,
     pub role: Role,
     pub profile_image_url: Option<String>,
@@ -47,32 +51,10 @@ pub struct UserDetails {
 }
 
 // ! create UserStatus enum (generalized)
-
+#[allow(dead_code)]
 impl User {
-    #[instrument]
-    pub async fn new(
-        email: Email,
-        password: String,
-        username: String,
-        name: String,
-    ) -> Result<UserDetails, surrealdb::Error> {
-        // ! Hash password w/ aragon?
-        let hashed_password = password;
-
-        // create new User Struct
-        let new_user = Self {
-            id: Uuid::now_v7().to_string(),
-            username,
-            email,
-            password: hashed_password,
-            name,
-            role: Role::User,
-            profile_image_url: None,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
-        };
-
-        // insert into DB
+    #[instrument(skip(new_user))]
+    pub async fn new(new_user: Self) -> Result<UserDetails, surrealdb::Error> {
         match DB.create(TABLE).content(new_user).await {
             Ok(user) => {
                 debug!("created new user");
@@ -159,25 +141,15 @@ impl User {
     //     debug!("profile image updated");
     // }
 
-    #[instrument(skip(self))]
-    pub fn validate_email(&self, email: String) -> Result<(), String> {
-        // Email validation logic
-        if !email.contains("@") {
-            return Err("Invalid email".to_string());
-        }
-
-        Ok(())
+    pub fn get_role(&self) -> Role {
+        self.role
     }
 
-    // pub fn get_role(&self) -> Role {
-    //     self.role
-    // }
+    pub fn is_admin(&self) -> bool {
+        self.role == Role::Admin
+    }
 
-    // pub fn is_admin(&self) -> bool {
-    //     self.role == Role::Admin
-    // }
-
-    // pub fn is_moderator(&self) -> bool {
-    //     self.role == Role::Moderator
-    // }
+    pub fn is_moderator(&self) -> bool {
+        self.role == Role::Moderator
+    }
 }
