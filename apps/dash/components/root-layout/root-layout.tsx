@@ -7,7 +7,7 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export function RootLayout(props: RootLayoutProps) {
+export default function RootLayout(props: RootLayoutProps) {
   const { children } = props;
   return (
     <NextUIProvider>

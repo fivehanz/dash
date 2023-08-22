@@ -1,19 +1,24 @@
 {
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx-cloud",
       "options": {
-        "cacheableOperations": [],
-        "accessToken": "YjNiNzNmYjktMzM0Mi00ZjJhLTgxMmEtYTIzM2I1YjYwZWU2fHJlYWQtd3JpdGU="
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "accessToken": "NDY0NTg0Y2EtYmQ0Yy00MzU0LWE0YTQtM2VmZWM4ODg3ZmNhfHJlYWQtd3JpdGU="
       }
     }
   },
-  "affected": {
-    "defaultBase": "main"
-  },
   "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
     "test": {
-      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+    },
+    "e2e": {
+      "inputs": ["default", "^production"]
     },
     "lint": {
       "inputs": [
@@ -23,6 +28,19 @@
       ]
     }
   },
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/src/test-setup.[jt]s",
+      "!{projectRoot}/test-setup.[jt]s",
+      "!{projectRoot}/.eslintrc.json"
+    ],
+    "sharedGlobals": []
+  },
   "generators": {
     "@nx/react": {
       "application": {
@@ -31,7 +49,7 @@
     },
     "@nx/next": {
       "application": {
-        "style": "css",
+        "style": "scss",
         "linter": "eslint"
       }
     }

@@ -18,7 +18,7 @@
         (import rust-overlay)
         (self: super: rec {
           nodejs = super.nodejs-18_x;
-          yarn = super.yarn.override {inherit nodejs;};
+          #yarn = super.yarn.override {inherit nodejs;};
           rustToolchain = let
             rust = super.rust-bin;
           in
@@ -48,7 +48,7 @@
 
           node2nix
           nodejs
-          yarn
+          nodePackages.pnpm
         ];
 
         shellHook = ''
