@@ -1,4 +1,4 @@
-name: rust linting with clippy
+name: Rust linting with clippy
 
 on:
   push:
