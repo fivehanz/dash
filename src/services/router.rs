@@ -5,16 +5,20 @@ use axum::{
     Json, Router, Server,
 };
 use std::net::SocketAddr;
-use tower_http::services::ServeDir;
-use tower_http::trace::{self, TraceLayer};
+use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
+use tower_http::{services::ServeDir, LatencyUnit};
 use tracing::{info, Level};
 
 /// Creates a router for handling HTTP requests.
 pub fn create_router() -> Router {
     // creates a TraceLayer for HTTP tracing with INFO level logging for spans and response handling.
     let http_trace_layer = TraceLayer::new_for_http()
-        .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
-        .on_response(trace::DefaultOnResponse::new().level(Level::INFO));
+        .make_span_with(DefaultMakeSpan::new().include_headers(true))
+        .on_response(
+            DefaultOnResponse::new()
+                .level(Level::INFO)
+                .latency_unit(LatencyUnit::Micros),
+        );
 
     // declare static web router w/ not found fallback
     let static_router_service: MethodRouter =
