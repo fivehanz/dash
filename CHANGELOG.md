@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/fivehanz/dash/compare/v0.4.0...v0.5.0) (2023-08-22)
+
+
+### Features
+
+* gRPC ([c65e048](https://github.com/fivehanz/dash/commit/c65e04842ee0ea6421dd99e2acf1925c73cb2f40))
+* user CRUD w/ surrealdb ([a174b53](https://github.com/fivehanz/dash/commit/a174b53eb7c7001375015148b20197daca87d892))
+* validation w/ errors ([c87f5c7](https://github.com/fivehanz/dash/commit/c87f5c7b92ca84f91f3bd20aada326cc93a722c2))
+
+
+### Bug Fixes
+
+* tracing messages ([903be08](https://github.com/fivehanz/dash/commit/903be08a370794a7cd3cfae1bd8dcad1a75bf5e5))
+
 ## [0.4.0](https://github.com/fivehanz/dash/compare/v0.3.0...v0.4.0) (2023-08-13)
 
 
