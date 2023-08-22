@@ -29,7 +29,7 @@ impl Connection {
 
     // initialize db connection with error handling
     pub async fn init(&mut self, configs: &configs::Configs) -> DatabaseConnectionStatus {
-        match Self::connect(&self, configs).await {
+        match Self::connect(self, configs).await {
             Ok(jwt) => {
                 self.jwt = Some(jwt);
                 debug!("connected to database {:?}", &self);

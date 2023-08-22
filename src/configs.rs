@@ -17,6 +17,7 @@ pub struct Configs {
 }
 
 /// Enum representing the different modes.
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Deserialize, Clone, Default)]
 pub enum Mode {
     // ! find a way to make it camelcase and match the enum at the same time

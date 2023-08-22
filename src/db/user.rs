@@ -94,11 +94,11 @@ impl User {
         match DB.delete((TABLE, id.to_string())).await {
             Ok(user) => {
                 debug!("deleted user");
-                return Some(user);
+                Some(user)
             }
             Err(e) => {
                 warn!("failed to delete user: {:?}", &e);
-                return None;
+                None
             }
         }
     }
