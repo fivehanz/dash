@@ -22,10 +22,12 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
+    "**/*.cjs",
     "**/*.jsx",
     "../../apps/dash/.next/types/**/*.ts",
     "../../dist/apps/dash/.next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "next.config.cjs"
   ],
   "exclude": [
     "node_modules",
