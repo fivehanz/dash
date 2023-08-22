@@ -27,6 +27,13 @@ message CreateUserResponse {
     string id = 2;
 }
 
+// ! how to use this?
+// message ValidationError {
+//     string code = 1;
+//     string message = 2;
+//     string params = 3;
+// } 
+
 message GetUserRequest {
     string id = 1;
 }

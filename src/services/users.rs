@@ -3,15 +3,19 @@ use super::proto::{
     DeleteUserResponse, GetUserRequest, GetUserResponse, UpdatePasswordRequest,
     UpdatePasswordResponse, UpdateUserRequest, UpdateUserResponse, User,
 };
-use crate::db::user::User as UserDb;
+use crate::db::user::{Role, User as UserDb};
+use chrono::Utc;
 use serde_derive::{Deserialize, Serialize};
-use serde_email::Email;
-use tonic::{Request, Response, Status};
+use serde_json::json;
+use tonic::{metadata::MetadataMap, Request, Response, Status};
 use tracing::{debug, instrument, warn};
+use uuid::Uuid;
+use validator::Validate;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct UsersService {}
 
+#[allow(unused_variables)]
 #[tonic::async_trait]
 impl Users for UsersService {
     /// Create a new user.
@@ -31,7 +35,7 @@ impl Users for UsersService {
     /// # Errors
     ///
     /// An error is returned if there is a failure in processing the user creation request.
-    #[instrument]
+    #[instrument(skip(self, request))]
     async fn create_user(
         &self,
         request: Request<CreateUserRequest>,
@@ -41,17 +45,43 @@ impl Users for UsersService {
 
         let request = request.into_inner();
 
-        // ! validate user data
-        let email: Email = match Email::try_from(request.email) {
-            Ok(email) => email,
+        // ! Hash password w/ aragon?
+        let hashed_password = request.password;
+
+        // create new User Struct
+        let new_user = UserDb {
+            id: Uuid::now_v7().to_string(),
+            username: request.username,
+            email: request.email,
+            password: hashed_password,
+            name: request.name,
+            role: Role::User,
+            profile_image_url: None,
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+        };
+
+        // validate user data
+        match new_user.validate() {
+            Ok(_) => (),
             Err(e) => {
-                debug!("RESPONSE failed to process create_user, {}", &e);
-                return Err(Status::invalid_argument(e.to_string()));
+                debug!("RESPONSE failed to process create_user, {:?}", &e);
+
+                // add errors to metadata
+                let mut metadata = MetadataMap::new();
+                metadata.insert("errors", json!(e).to_string().parse().unwrap());
+
+                // return status error
+                return Err(Status::with_metadata(
+                    tonic::Code::InvalidArgument,
+                    "validation error",
+                    metadata,
+                ));
             }
         };
 
         // Create a new user
-        match UserDb::new(email, request.password, request.username, request.name).await {
+        match UserDb::new(new_user).await {
             Ok(user) => {
                 // construct the response
                 let response = Response::new(CreateUserResponse {
@@ -65,7 +95,7 @@ impl Users for UsersService {
             }
             Err(e) => {
                 // ! handle error with specific message
-                debug!("RESPONSE failed to process create_user, {:#?}", &e);
+                debug!("RESPONSE failed to process create_user, {:?}", &e);
                 Err(Status::unknown(e.to_string()))
             }
         }
