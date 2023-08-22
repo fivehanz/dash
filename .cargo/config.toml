@@ -1,2 +1,5 @@
+[build]
+target-dir = 'dist/target'
+
 [target.'cfg(all())']
 rustflags = ["--cfg", "uuid_unstable"]

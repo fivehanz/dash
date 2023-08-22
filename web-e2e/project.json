@@ -1,0 +1,22 @@
+{
+  "name": "web-e2e",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "web-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "outputs": ["{workspaceRoot}/dist/.playwright/web-e2e"],
+      "options": {
+        "config": "web-e2e/playwright.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["web-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "implicitDependencies": ["web"]
+}

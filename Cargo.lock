@@ -74,6 +74,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4668cab20f66d8d020e1fbc0ebe47217433c1b6c8f2040faf858554e394ace6"
 
 [[package]]
+name = "api"
+version = "0.5.0"
+dependencies = [
+ "axum",
+ "chrono",
+ "config",
+ "prost",
+ "serde",
+ "serde-email",
+ "serde_derive",
+ "serde_json",
+ "surrealdb",
+ "tokio",
+ "tonic",
+ "tonic-build",
+ "tonic-reflection",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
+ "validator",
+]
+
+[[package]]
 name = "approx"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -485,30 +509,6 @@ checksum = "1bfb12502f3fc46cca1bb51ac28df9d618d813cdc3d2f25b9fe775a34af26bb3"
 dependencies = [
  "generic-array",
  "typenum",
-]
-
-[[package]]
-name = "dash"
-version = "0.5.0"
-dependencies = [
- "axum",
- "chrono",
- "config",
- "prost",
- "serde",
- "serde-email",
- "serde_derive",
- "serde_json",
- "surrealdb",
- "tokio",
- "tonic",
- "tonic-build",
- "tonic-reflection",
- "tower-http",
- "tracing",
- "tracing-subscriber",
- "uuid",
- "validator",
 ]
 
 [[package]]
@@ -1918,9 +1918,9 @@ dependencies = [
 
 [[package]]
 name = "rustls-webpki"
-version = "0.101.3"
+version = "0.101.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "261e9e0888cba427c3316e6322805653c9425240b6fd96cee7cb671ab70ab8d0"
+checksum = "7d93931baf2d282fff8d3a532bbfd7653f734643161b87e3e01e59a04439bf0d"
 dependencies = [
  "ring",
  "untrusted",
@@ -2613,6 +2613,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tracing-serde"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc6b213177105856957181934e4920de57730fc69bf42c37ee5bb664d406d9e1"
+dependencies = [
+ "serde",
+ "tracing-core",
+]
+
+[[package]]
 name = "tracing-subscriber"
 version = "0.3.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2622,12 +2632,15 @@ dependencies = [
  "nu-ansi-term",
  "once_cell",
  "regex",
+ "serde",
+ "serde_json",
  "sharded-slab",
  "smallvec",
  "thread_local",
  "tracing",
  "tracing-core",
  "tracing-log",
+ "tracing-serde",
 ]
 
 [[package]]

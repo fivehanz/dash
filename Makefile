@@ -1,19 +1,25 @@
 
 
+serve:
+	npx nx run-many -t serve
+
 watch:
-	cargo watch -q -c -w src/ -w build.rs -x run
+	cargo watch -q -c -x run
 
 check:
 	cargo check
 
 build:
-	cargo build --release
+	npx nx run-many -t build
 
 clean:
 	cargo clean
 
 lint:
-	cargo clippy
+	npx nx affected -t lint
 
 update:
 	cargo update
+
+export:
+	npx nx run-many -t export

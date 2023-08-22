@@ -1,6 +1,13 @@
-/target
+dist/
 .direnv/
 app.toml
 .env
 .vscode/
 .DS_Store
+.yarn/
+.yarnrc
+
+node_modules/
+
+# Next.js
+.next

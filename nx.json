@@ -1,0 +1,40 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx-cloud",
+      "options": {
+        "cacheableOperations": [],
+        "accessToken": "YjNiNzNmYjktMzM0Mi00ZjJhLTgxMmEtYTIzM2I1YjYwZWU2fHJlYWQtd3JpdGU="
+      }
+    }
+  },
+  "affected": {
+    "defaultBase": "main"
+  },
+  "targetDefaults": {
+    "test": {
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore"
+      ]
+    }
+  },
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "babel": true
+      }
+    },
+    "@nx/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  },
+  "plugins": ["@monodon/rust"]
+}
