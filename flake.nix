@@ -45,7 +45,6 @@
           cargo-edit
           cargo-watch
           clippy
-          diesel-cli
 
           node2nix
           nodejs
