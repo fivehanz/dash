@@ -51,6 +51,7 @@ pub struct UserDetails {
 }
 
 // ! create UserStatus enum (generalized)
+
 #[allow(dead_code)]
 impl User {
     #[instrument(skip(new_user))]
