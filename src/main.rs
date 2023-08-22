@@ -11,7 +11,7 @@ use tracing::debug;
 #[tokio::main]
 async fn main() {
     // initialize tracing subscriber
-    let _subscriber = tracing_subscriber::fmt()
+    tracing_subscriber::fmt()
         .pretty()
         .with_target(false)
         .with_file(true)
