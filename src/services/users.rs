@@ -101,7 +101,7 @@ impl Users for UsersService {
         }
     }
 
-    // get user by uuid
+    /// Get user by uuid
     /// Retrieves a user based on the provided request.
     ///
     /// # Arguments
@@ -139,19 +139,19 @@ impl Users for UsersService {
                 }),
                 None => {
                     let error = Status::not_found("user not found".to_string());
-                    warn!("RESPONSE failed to process get_user, {:#?}", &error);
+                    warn!("RESPONSE failed to process get_user, {:?}", &error);
                     return Err(error);
                 }
             },
             Err(_) => {
                 let error = Status::invalid_argument("invalid uuid".to_string());
-                warn!("RESPONSE failed to process get_user, {:#?}", &error);
+                warn!("RESPONSE failed to process get_user, {:?}", &error);
                 return Err(error);
             }
         };
 
         // Log the outgoing response
-        debug!("RESPONSE get_user: {:#?}", &response);
+        debug!("RESPONSE get_user: {:?}", &response);
         Ok(response)
     }
 
@@ -165,47 +165,82 @@ impl Users for UsersService {
     ///
     /// * `Result<Response<UpdateUserResponse>, Status>` - The response indicating the success or failure of the user update.
     /// Updates a user based on the given request.
-    #[instrument]
+    #[instrument(skip(self))]
     async fn update_user(
         &self,
         request: Request<UpdateUserRequest>,
     ) -> Result<Response<UpdateUserResponse>, Status> {
-        unimplemented!();
-        // // Log the incoming request
-        // debug!("REQUEST update_user");
+        // Log the incoming request
+        debug!("REQUEST update_user");
 
-        // let request: UpdateUserRequest = request.into_inner();
+        let request: UpdateUserRequest = request.into_inner();
 
-        // // Convert the user ID to the appropriate type
-        // let user_id: uuid::Uuid = match request.id.as_str().try_into() {
-        //     Ok(id) => id,
-        //     Err(_) => {
-        //         let error = Status::invalid_argument("invalid uuid".to_string());
-        //         debug!("RESPONSE failed to process update_user, {:#?}", &error);
-        //         return Err(error);
-        //     }
-        // };
+        // Convert the user ID to type Uuid
+        let user_id: uuid::Uuid = match request.id.as_str().try_into() {
+            Ok(id) => id,
+            Err(_) => {
+                let error = Status::invalid_argument("invalid uuid".to_string());
+                debug!("RESPONSE failed to process update_user, {:?}", &error);
+                return Err(error);
+            }
+        };
 
-        // // Update the user
-        // match UserDb::update_user(user_id, request).await {
-        //     Some(user) => {
-        //         // Construct the response
-        //         let response = Response::new(UpdateUserResponse {
-        //             success: true,
-        //             id: user.id.id.get("String").unwrap().to_string(),
-        //             message: "user updated".to_string(),
-        //         });
-        //         // Log the response
-        //         debug!("RESPONSE update_user: {:#?}", &response);
-        //         // Return the response
-        //         Ok(response)
-        //     }
-        //     None => {
-        //         let error = Status::not_found("user not found".to_string());
-        //         debug!("RESPONSE failed to process update_user, {:#?}", &error);
-        //         Err(error)
-        //     }
-        // }
+        // get user details
+        let mut user: crate::db::user::UserUpdateDetails = match UserDb::get_user(user_id).await {
+            Some(user) => user.try_into().unwrap(),
+            None => {
+                let error = Status::not_found("user not found".to_string());
+                debug!("RESPONSE failed to process update_user, {:?}", &error);
+                return Err(error);
+            }
+        };
+
+        // update UserUpdateDetails struct with UpdateUserRequest details
+        user.name = request.name.unwrap_or(user.name);
+        user.email = request.email.unwrap_or(user.email);
+        user.username = request.username.unwrap_or(user.username);
+        user.profile_image_url = request.profile_image_url.or(user.profile_image_url);
+        user.role = request.role.unwrap_or(user.role as u32).try_into().unwrap();
+
+        // validate user data
+        match user.validate() {
+            Ok(_) => (),
+            Err(e) => {
+                debug!("RESPONSE failed to process update_user, {:?}", &e);
+
+                // add errors to metadata
+                let mut metadata = MetadataMap::new();
+                metadata.insert("errors", json!(e).to_string().parse().unwrap());
+
+                // return status error
+                return Err(Status::with_metadata(
+                    tonic::Code::InvalidArgument,
+                    "validation error",
+                    metadata,
+                ));
+            }
+        };
+
+        // Update the user
+        match UserDb::update_user(user_id, user).await {
+            Ok(user) => {
+                // Construct the response
+                let response: Response<UpdateUserResponse> = Response::new(UpdateUserResponse {
+                    success: true,
+                    id: user.id.id.get("String").unwrap().to_string(),
+                    message: "user updated".to_string(),
+                });
+                // Log the response
+                debug!("RESPONSE update_user: {:?}", &response);
+                // Return the response
+                Ok(response)
+            }
+            Err(e) => {
+                let error = Status::unknown(e.to_string());
+                debug!("RESPONSE failed to process update_user, {:?}", &error);
+                Err(error)
+            }
+        }
     }
 
     #[instrument]
@@ -217,7 +252,7 @@ impl Users for UsersService {
         unimplemented!()
     }
 
-    // delete user by uuid
+    /// delete user by uuid
     /// Deletes a user based on the provided request.
     ///
     /// # Arguments

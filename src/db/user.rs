@@ -27,18 +27,30 @@ pub struct User {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq)]
 pub enum Role {
-    Admin,
-    Moderator,
     User,
+    Moderator,
+    Admin,
 }
 
-#[derive(Debug, Deserialize)]
+// implement Role: From<u32>
+impl From<u32> for Role {
+    fn from(role: u32) -> Self {
+        match role {
+            0 => Role::User,
+            1 => Role::Moderator,
+            2 => Role::Admin,
+            _ => Role::User,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Id {
     pub id: HashMap<String, Uuid>,
     // pub tb: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UserDetails {
     pub id: Id,
     pub username: String,
@@ -48,6 +60,34 @@ pub struct UserDetails {
     pub profile_image_url: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Validate, Serialize, Deserialize)]
+pub struct UserUpdateDetails {
+    #[validate(length(min = 4, max = 20))]
+    pub username: String,
+    #[validate(email)]
+    pub email: String,
+    #[validate(length(min = 3))]
+    pub name: String,
+    pub role: Role,
+    #[validate(url)]
+    pub profile_image_url: Option<String>,
+    pub updated_at: DateTime<Utc>,
+}
+
+// implement From<UserDetails> to UserUpdateDetails
+impl From<UserDetails> for UserUpdateDetails {
+    fn from(user: UserDetails) -> Self {
+        UserUpdateDetails {
+            username: user.username,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            profile_image_url: user.profile_image_url,
+            updated_at: Utc::now(),
+        }
+    }
 }
 
 // ! create UserStatus enum (generalized)
@@ -79,16 +119,20 @@ impl User {
         }
     }
 
-    // #[instrument(skip(self))]
-    // async fn update(&self) {
-    //     match DB.update((TABLE, self.id)).merge(self).await {
-    //         Ok(user) => Ok(user),
-    //         Err(e) => {
-    //             debug!("failed to update user: {:?}", &e);
-    //             Err(e)
-    //         }
-    //     }
-    // }
+    #[instrument]
+    pub async fn update_user(
+        id: Uuid,
+        user: UserUpdateDetails,
+    ) -> Result<UserDetails, surrealdb::Error> {
+        // update in database
+        match DB.update((TABLE, id.to_string())).merge(user).await {
+            Ok(user) => Ok(user),
+            Err(e) => {
+                debug!("failed to update user: {:?}", &e);
+                Err(e)
+            }
+        }
+    }
 
     #[instrument]
     pub async fn delete_user(id: Uuid) -> Option<UserDetails> {
@@ -105,27 +149,6 @@ impl User {
     }
 
     // #[instrument(skip(self))]
-    // pub fn update_name(&mut self, name: String) {
-    //     self.name = name;
-    //     self.updated_at = Utc::now();
-    //     debug!("name updated");
-    // }
-
-    // #[instrument(skip(self))]
-    // pub fn update_username(&mut self, username: String) {
-    //     self.username = username;
-    //     self.updated_at = Utc::now();
-    //     debug!("username updated");
-    // }
-
-    // #[instrument(skip(self))]
-    // pub fn update_email(&mut self, email: String) {
-    //     self.email = email;
-    //     self.updated_at = Utc::now();
-    //     debug!("email updated");
-    // }
-
-    // #[instrument(skip(self))]
     // pub fn update_password(&mut self, new_password: String) {
     //     // Hash new password
     //     let hashed_password = new_password;
@@ -133,13 +156,6 @@ impl User {
     //     self.password = hashed_password;
     //     self.updated_at = Utc::now();
     //     debug!("password updated");
-    // }
-
-    // #[instrument(skip(self))]
-    // pub fn update_profile_image(&mut self, image_url: String) {
-    //     self.profile_image_url = Some(image_url);
-    //     self.updated_at = Utc::now();
-    //     debug!("profile image updated");
     // }
 
     pub fn get_role(&self) -> Role {
