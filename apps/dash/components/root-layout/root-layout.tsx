@@ -1,5 +1,4 @@
 /* eslint-disable-next-line */
-'use client';
 import './globals.css';
 
 interface RootLayoutProps {
