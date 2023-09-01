@@ -28,8 +28,7 @@
       "configurations": {
         "development": {
           "buildTarget": "dash:build:development",
-          "dev": true,
-          "turbo": true
+          "dev": true
         },
         "production": {
           "buildTarget": "dash:build:production",

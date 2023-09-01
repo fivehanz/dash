@@ -5,6 +5,7 @@ const { join } = require('path');
 //
 // See: https://nx.dev/guides/using-tailwind-css-in-react#step-4:-applying-configuration-to-libraries
 
+/* eslint-disable */
 module.exports = {
   plugins: {
     tailwindcss: {
@@ -13,3 +14,4 @@ module.exports = {
     autoprefixer: {},
   },
 };
+/* eslint-enable */
