@@ -45,6 +45,7 @@
           cargo-edit
           cargo-watch
           clippy
+          bacon
 
           node2nix
           nodejs

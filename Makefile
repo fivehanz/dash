@@ -2,7 +2,8 @@ serve:
 	npx nx run-many -t serve
 
 watch:
-	cargo watch -q -c -x run
+	# cargo watch -q -c -x run
+	bacon run
 
 check:
 	cargo check
