@@ -38,12 +38,13 @@
         ];
 
         packages = with pkgs; [
-          rustToolchain
+          # rustToolchain
           openssl
           pkg-config
           cargo-deny
           cargo-edit
           cargo-watch
+          cargo-cross
           clippy
           bacon
 
@@ -52,10 +53,10 @@
           nodePackages.pnpm
         ];
 
-        shellHook = ''
-          ${pkgs.rustToolchain}/bin/cargo --version
-          echo "node `${pkgs.nodejs}/bin/node --version`"
-        '';
+        # shellHook = ''
+          # ${pkgs.rustToolchain}/bin/cargo --version
+          # echo "node `${pkgs.nodejs}/bin/node --version`"
+        # '';
       };
     });
 }

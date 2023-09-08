@@ -11,6 +11,15 @@ check:
 build:
 	npx nx run-many -t build
 
+build-release:
+	cargo build --release
+
+build-release-freebsd:
+	cargo build --release --target x86_64-unknown-freebsd
+
+build-docker-freebsd:
+	CROSS_CONTAINER_OPTS="--platform linux/amd64" cross build --target x86_64-unknown-freebsd --release
+
 clean:
 	cargo clean
 
