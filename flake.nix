@@ -38,7 +38,7 @@
         ];
 
         packages = with pkgs; [
-          # rustToolchain
+          rustToolchain
           openssl
           pkg-config
           cargo-deny
