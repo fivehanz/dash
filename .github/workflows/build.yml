@@ -21,7 +21,7 @@ jobs:
         with:
           profile: minimal
           default: true
-          toolchain: 1.72.0
+          toolchain: 1.67.1
       - name: build
         run: cargo build --verbose
       - name: run tests
