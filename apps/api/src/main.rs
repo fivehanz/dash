@@ -12,7 +12,7 @@ use tracing::debug;
 async fn main() {
     // initialize tracing subscriber
     tracing_subscriber::fmt()
-        .pretty()
+        .compact()
         .with_target(false)
         .with_file(true)
         .with_line_number(true)
