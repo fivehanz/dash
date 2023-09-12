@@ -1,0 +1,16 @@
+{
+  "name": "graphql-mesh",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@graphql-mesh/grpc": "^0.95.5",
+    "@graphql-mesh/cli": "^0.87.6",
+    "graphql": "^16.8.0"
+  }
+}
