@@ -1,5 +1,5 @@
 ### build binary
-FROM rust:1.71-slim-bookworm AS binary-builder
+FROM rust:1.67.1-slim-bookworm AS binary-builder
 
 WORKDIR /app
 COPY . .
